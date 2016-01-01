@@ -1,37 +1,38 @@
 #include "dynamicallocation.h"
-/* */
-static char *mem_heap; /*point to first byte of heap */
-static char *mem_brk; /* point to last byte of heap */
-static char *mem_max_addr; /* max legal heap addr plus 1 */
-static char *heap_listp; /* point to prologue block(序言块) */
-static const unsigned int ChunkSize = 1<<12; /* extend heap by this amount bytes */
-unsigned int unusedMem = 0;
+#include <malloc.h>
+#define Malloc malloc
 
-static void *mem_sbrki(unsigned int incr);
-static bool mem_init(void);
-static void* extend_heap(unsigned int words);
-static void* coalesce(void *p);
-static void place(void *bp,unsigned int size);
-static void* find_fit(unsigned int size);
-static void* find_first_fit(unsigned int size);
-static void* find_best_fit(unsigned int size);
+Memory Memory::uniqueMemory = Memory();
+const unsigned int Memory::wsize = 4;
+const unsigned int Memory::dsize = 8;
+const unsigned int Memory::ChunkSize = 1 << 12;
+
+Memory Memory::getInstance(void)
+{
+    return uniqueMemory;
+}
+
+void Memory::setMemfit(MemFit *m)
+{
+    memfit = m;
+}
+
 /*
  *mem_init
  *
  * init the memory model
  *
  */
-static bool mem_init(void)
+bool Memory::mem_init(void)
 {
     if(Max_Heap <= 0)
         return false;
-    mem_heap = (char*)Malloc(Max_Heap);
+    mem_heap = (char*)malloc(Max_Heap);
     mem_brk = mem_heap;
     mem_max_addr = mem_heap + Max_Heap;
     return true;
 }
-
-unsigned int getUnusedMem(void)
+unsigned int Memory::getUnusedMem(void)
 {
     return unusedMem;
 }
@@ -43,7 +44,7 @@ unsigned int getUnusedMem(void)
  *
  */
 
-static void *mem_sbrk(unsigned int incr)
+void *Memory::mem_sbrk(unsigned int incr)
 {
     char *old_brk = mem_brk;
 
@@ -53,7 +54,7 @@ if(incr <= 0 || mem_brk + incr > mem_max_addr)
     return (void*)old_brk;
 }
 
-static void *extend_heap(unsigned int words)
+void *Memory::extend_heap(unsigned int words)
 {
     char *bp;
     unsigned int size;
@@ -69,7 +70,7 @@ static void *extend_heap(unsigned int words)
     return coalesce(bp);
 }
 
-int mm_init(unsigned int m)
+int Memory::mm_init(unsigned int m)
 {
     Max_Heap = m;
     unusedMem = m;
@@ -89,7 +90,7 @@ int mm_init(unsigned int m)
     return 0;
 }
 
-void mm_free(void *bp)
+void Memory::mm_free(void *bp)
 {
     unsigned int size = getSize(getBlockHeader(bp));
 
@@ -99,7 +100,7 @@ void mm_free(void *bp)
     unusedMem += size;
 }
 
-static void *coalesce(void *bp)
+void *Memory::coalesce(void *bp)
 {
     unsigned int prev_allocfield = getAlloc(getBlockFooter(getPrevBlock(bp)));
     unsigned int next_allocfield = getAlloc(getBlockHeader(getNextBlock(bp)));
@@ -131,7 +132,7 @@ static void *coalesce(void *bp)
     return bp;
 }
 
-void *mm_malloc(unsigned int size)
+void *Memory::mm_malloc(unsigned int size)
 {
     unsigned int asize; /* adjusted block size */
     unsigned int extendsize; /* amount to extend heap if no fit */
@@ -147,9 +148,10 @@ void *mm_malloc(unsigned int size)
         asize = dsize * ((size + dsize + dsize - 1)/dsize);
 
     /* search the free list for a fit */
-    if((bp = (char*)find_fit(asize)) != NULL)
+    if((bp = (char*)memfit->find_fit(*this,asize)) != NULL)
     {
         place(bp,asize);
+        unusedMem -= asize;
         return bp;
     }
 
@@ -162,36 +164,7 @@ void *mm_malloc(unsigned int size)
     return bp;
 }
 
-static void *find_fit(unsigned int size)
-{
-#if FIRST_FIT==1
-    return find_first_fit(size);
-#elif BEST_FIT==1
-    return find_best_fit(size);
-#endif
-}
-
-static void *find_first_fit(unsigned int size)
-{
-    unsigned int blocksize;
-    char *bp;
-
-    if(size <= 0)
-        return NULL;
-
-    bp = heap_listp;
-    blocksize = getSize(getBlockHeader(bp));
-    while(blocksize)
-    {
-        if(blocksize >= size && !getAlloc(getBlockHeader(bp)))
-            return bp;
-        bp = getNextBlock(bp);
-        blocksize = getSize(getBlockHeader(bp));
-    }
-    return NULL;
-}
-
-static void place(void *bp, unsigned int size)
+void Memory::place(void *bp, unsigned int size)
 {
     char *spiltblock_addr;
     unsigned int spiltblock_size;

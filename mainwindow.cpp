@@ -2,10 +2,11 @@
 #include "ui_mainwindow.h"
 #include <QtCore>
 #include <QStandardItemModel>
-#include "process.h"
-#include "dynamicallocation.h"
 #include <iostream>
 #include <fstream>
+#include "process.h"
+#include "dynamicallocation.h"
+#include "findfirstfit.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,10 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /* load data */
+    /* init and load data */
     jobModel = new JobList();
     processModel = new ProcessList();
     resource = new Resource;
+    mem.setMemfit(new FindFirstFit());
 
     std::fstream f;
     f.open("test.txt");
@@ -25,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     unsigned int tapeNum,memory;
 
     f >> memory >> tapeNum;
-    mm_init(memory);
+    mem.mm_init(memory);
     resource->tape.init(tapeNum);
     jobModel->init(f,resource->tape);
     /* model */
@@ -65,4 +67,9 @@ void MainWindow::on_startButton_clicked()
             while( QTime::currentTime() < dieTime )
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
+}
+
+void MainWindow::on_pauseButton_clicked()
+{
+    stop = !stop;
 }

@@ -20,9 +20,9 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_6">
+   <layout class="QHBoxLayout" name="horizontalLayout_7">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -88,8 +88,6 @@
             <widget class="QTableView" name="memoryView"/>
            </item>
           </layout>
-          <zorder>resourceView</zorder>
-          <zorder>memoryView</zorder>
          </widget>
         </item>
         <item>
@@ -112,11 +110,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="startButton">
-          <property name="text">
-           <string>开始</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QPushButton" name="startButton">
+            <property name="text">
+             <string>开始</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pauseButton">
+            <property name="text">
+             <string>暂停</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>

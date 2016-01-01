@@ -7,7 +7,9 @@
 #include <cstring>
 #include <vector>
 #include <QAbstractTableModel>
+#include "dynamicallocation.h"
 
+extern Memory mem;
 class ProcessList;
 class Tape;
 

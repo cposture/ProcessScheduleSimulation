@@ -1,6 +1,6 @@
 #include "process.h"
-#include "dynamicallocation.h"
 
+Memory mem = Memory::getInstance();
 int JobList::itemCount = 6;
 
 JobList::JobList(QObject *parent):QAbstractTableModel(parent)
@@ -86,7 +86,7 @@ bool JobList::schedule(ProcessList &p,unsigned int time)
     bool sign = false;
     for(auto i = min; i != jlist.end(); ++i)
     {
-        unsigned int m = getUnusedMem();
+        unsigned int m = mem.getUnusedMem();
         if(i->stime <= time  && i->memory <= m) /* select proper job */
         {
             if(i->ntime <= min->ntime || min->memory > m)
@@ -100,7 +100,7 @@ bool JobList::schedule(ProcessList &p,unsigned int time)
     if(!sign)
         return false;
 
-    if(NULL == ( min->memAddr = mm_malloc(min->memory)))
+    if(NULL == ( min->memAddr = mem.mm_malloc(min->memory)))
         return false;
 
     p.insertJobB(*min);
@@ -252,7 +252,7 @@ bool PCB::running(ProcessList &p,unsigned int time)
         wtime = (float)(turntime)/ntime;
         state = FINISH;
         tape->release(pid);
-        mm_free(memAddr);
+        mem.mm_free(memAddr);
     }
     else
     {
@@ -360,7 +360,7 @@ QString Resource::at(const QModelIndex &index) const
     case 0:
         return QString("%1").arg(time);
     case 1:
-        return QString("%1").arg(unusedMem);
+        return QString("%1").arg(mem.unusedMem);
     case 2:
         return QString("%1").arg(tape.getUnusedNum());
     default:

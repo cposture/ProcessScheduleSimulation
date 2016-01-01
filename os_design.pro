@@ -15,13 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     process.cpp \
-    dynamicallocation.cpp
+    dynamicallocation.cpp \
+    findfirstfit.cpp \
+    memfit.cpp
 
 HEADERS  += mainwindow.h \
     process.h \
-    dynamicallocation.h
+    dynamicallocation.h \
+    findfirstfit.h \
+    memfit.h
 
 FORMS    += mainwindow.ui
-
+UI_DIR = ./UI
 # to support C++11
 QMAKE_CXXFLAGS += -std=c++11
