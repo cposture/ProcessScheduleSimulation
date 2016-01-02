@@ -29,11 +29,14 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout_4;
+    QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_2;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout;
     QTableView *JobView;
+    QHBoxLayout *horizontalLayout_4;
+    QPushButton *addJobButton;
+    QPushButton *delJobButton;
     QGroupBox *groupBox_2;
     QHBoxLayout *horizontalLayout_2;
     QTableView *processView;
@@ -53,7 +56,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1400, 609);
+        MainWindow->resize(1400, 653);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -61,10 +64,10 @@ public:
         MainWindow->setSizePolicy(sizePolicy);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        horizontalLayout_4 = new QHBoxLayout(centralWidget);
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_5 = new QHBoxLayout(centralWidget);
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
@@ -92,6 +95,22 @@ public:
 
         verticalLayout_2->addWidget(groupBox);
 
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setSpacing(6);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        addJobButton = new QPushButton(centralWidget);
+        addJobButton->setObjectName(QStringLiteral("addJobButton"));
+
+        horizontalLayout_4->addWidget(addJobButton);
+
+        delJobButton = new QPushButton(centralWidget);
+        delJobButton->setObjectName(QStringLiteral("delJobButton"));
+
+        horizontalLayout_4->addWidget(delJobButton);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_4);
+
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         horizontalLayout_2 = new QHBoxLayout(groupBox_2);
@@ -107,7 +126,7 @@ public:
         verticalLayout_2->addWidget(groupBox_2);
 
 
-        horizontalLayout_4->addLayout(verticalLayout_2);
+        horizontalLayout_5->addLayout(verticalLayout_2);
 
         verticalLayout_5 = new QVBoxLayout();
         verticalLayout_5->setSpacing(6);
@@ -155,6 +174,8 @@ public:
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         startButton = new QPushButton(centralWidget);
         startButton->setObjectName(QStringLiteral("startButton"));
+        startButton->setAutoDefault(true);
+        startButton->setDefault(true);
 
         verticalLayout_3->addWidget(startButton);
 
@@ -165,7 +186,7 @@ public:
         verticalLayout_5->addLayout(verticalLayout_4);
 
 
-        horizontalLayout_4->addLayout(verticalLayout_5);
+        horizontalLayout_5->addLayout(verticalLayout_5);
 
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
@@ -181,6 +202,8 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", "\347\243\201\347\233\230\344\275\234\344\270\232", 0));
+        addJobButton->setText(QApplication::translate("MainWindow", "\346\267\273\345\212\240", 0));
+        delJobButton->setText(QApplication::translate("MainWindow", "\345\210\240\351\231\244", 0));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "\345\206\205\345\255\230\344\275\234\344\270\232", 0));
         groupBox_5->setTitle(QApplication::translate("MainWindow", "\350\265\204\346\272\220", 0));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "\345\267\262\345\256\214\346\210\220\350\277\233\347\250\213", 0));
