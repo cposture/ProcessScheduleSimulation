@@ -60,8 +60,19 @@ void MainWindow::on_startButton_clicked()
 {
     //start
     PCB cur_process;
+    stop = !stop;
+    if(stop)
+        ui->startButton->setText("开始");
+    else
+        ui->startButton->setText("暂停");
     while(1)
     {
+        while(stop)
+        {
+            QTime dieTime = QTime::currentTime().addMSecs(250);
+            while( QTime::currentTime() < dieTime )
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        }
         jobModel->schedule(*processModel,resourceModel->getTime());
         if(processModel->schedule(cur_process))
         {
@@ -70,10 +81,7 @@ void MainWindow::on_startButton_clicked()
         }
         else
         {
-            char c;
             std::cout << "no running" << std::endl;
-            std::cin >> c;
-            break;
         }
         resourceModel->incTime();
         processModel->updateView();
@@ -81,7 +89,7 @@ void MainWindow::on_startButton_clicked()
         jobModel->updateView();
         resourceModel->updateView();
         QTime dieTime = QTime::currentTime().addMSecs(250);
-            while( QTime::currentTime() < dieTime )
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        while( QTime::currentTime() < dieTime )
+            QCoreApplication::processEvents(QEventLoop::AllEvents);
     }
 }

@@ -31,6 +31,7 @@ private:
     ProcessInMemModel *processModel;
     ProcessFinModel *processFinModel;
     ResourceModel *resourceModel;
+    bool stop = true;
 };
 
 #endif // MAINWINDOW_H

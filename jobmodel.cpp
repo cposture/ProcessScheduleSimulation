@@ -81,3 +81,40 @@ void JobModel::updateView(void)
 {
     endResetModel();
 }
+
+bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if(!index.isValid())
+        return false;
+
+    unsigned int row = index.row();
+    unsigned int column = index.column();
+    PCB *temp;
+
+    if(role ==Qt::EditRole)
+    {
+        if(row >= jlist.size())
+            temp = new PCB();
+        else
+            temp = &jlist[row];
+        switch(column)
+        {
+        case 0:
+            delete temp->name;
+            temp->name = new std::string(value.toString().toStdString());
+            emit dataChanged(index,index);
+            break;
+        default:
+            break;
+        }
+        return true;
+    }
+    return false;
+}
+
+Qt::ItemFlags JobModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+    flags |= Qt::ItemIsEditable;
+    return flags;
+}
