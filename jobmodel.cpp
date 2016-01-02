@@ -37,7 +37,7 @@ QString JobModel::at(const QModelIndex &index) const
     case 4:
         return QString("%1").arg(temp.tapeNum);
     case 5:
-        return QString("%1").arg(temp.pid);
+        return QString("%1").arg(temp.super);
     default:
         return "";
     }
@@ -90,13 +90,18 @@ bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role
     unsigned int row = index.row();
     unsigned int column = index.column();
     PCB *temp;
-
+    bool isnew = false;
     if(role ==Qt::EditRole)
     {
         if(row >= jlist.size())
+        {
             temp = new PCB();
+            isnew = true;
+        }
         else
+        {
             temp = &jlist[row];
+        }
         switch(column)
         {
         case 0:
@@ -104,8 +109,29 @@ bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role
             temp->name = new std::string(value.toString().toStdString());
             emit dataChanged(index,index);
             break;
+        case 1:
+            temp->stime = value.toInt();
+            break;
+        case 2:
+            temp->ntime = value.toInt();
+            break;
+        case 3:
+            temp->memory = value.toInt();
+            break;
+        case 4:
+            temp->tapeNum = value.toInt();
+            break;
+        case 5:
+            temp->super = value.toInt();
+            break;
         default:
             break;
+        }
+
+        if(isnew)
+        {
+            jlist.push_back(*temp);
+            delete temp;
         }
         return true;
     }
@@ -117,4 +143,17 @@ Qt::ItemFlags JobModel::flags(const QModelIndex &index) const
     Qt::ItemFlags flags = QAbstractItemModel::flags(index);
     flags |= Qt::ItemIsEditable;
     return flags;
+}
+
+void JobModel::addJob(const PCB &p)
+{
+    jlist.push_back(p);
+}
+
+void JobModel::deleteJob(unsigned int i)
+{
+    auto ite = jlist.begin();
+    for(; i > 0 && ite != jlist.end(); ite++,i--)
+        ;
+    jlist.erase(ite);
 }

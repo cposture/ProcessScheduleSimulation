@@ -25,6 +25,10 @@ public:
 private slots:
     void on_startButton_clicked();
 
+    void on_addJobButton_clicked();
+
+    void on_delJobButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     JobModel *jobModel;

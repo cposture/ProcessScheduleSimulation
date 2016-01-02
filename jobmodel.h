@@ -15,6 +15,8 @@ public:
     void updateView(void);
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    void addJob(const PCB& p);
+    void deleteJob(unsigned int i);
 private:
     QString at(const QModelIndex &index) const;
 };
