@@ -93,7 +93,9 @@ public:
     bool schedule(ProcessList& p,unsigned int time);
     void init(std::istream &in,Tape &tape);
     bool hasJob(void) const;
-
+    bool isValidPCB(const PCB &p);
+    bool addJob(const PCB &p);
+    void deleteJob(int i);
 protected:
     std::vector<PCB> jlist;
 };

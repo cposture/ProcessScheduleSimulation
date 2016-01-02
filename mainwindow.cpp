@@ -96,14 +96,14 @@ void MainWindow::on_startButton_clicked()
 
 void MainWindow::on_addJobButton_clicked()
 {
-    jobModel->addJob(PCB(&resourceModel->tape));
+    jobModel->insertJob(PCB(&resourceModel->tape));
     jobModel->updateView();
 }
 
 void MainWindow::on_delJobButton_clicked()
 {
     QModelIndex index = ui->JobView->currentIndex();
-    unsigned int row = index.row();
+    int row = index.row();
     jobModel->deleteJob(row);
     jobModel->updateView();
 }

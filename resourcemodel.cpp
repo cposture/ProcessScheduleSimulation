@@ -1,7 +1,7 @@
 #include "resourcemodel.h"
 #include <QColor>
-const unsigned int ResourceModel::row = 1;
-const unsigned int ResourceModel::column = 3;
+const int ResourceModel::row = 1;
+const int ResourceModel::column = 3;
 ResourceModel::ResourceModel(QObject *parent):QAbstractTableModel(parent)
 {
     time = 0;
