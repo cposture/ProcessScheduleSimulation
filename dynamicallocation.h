@@ -3,6 +3,8 @@
 #include "memfit.h"
 #include "findfirstfit.h"
 #include <memory>
+#include <QAbstractTableModel>
+
 /* Singleton and stagedy design pattern */
 class Memory
 {
@@ -17,6 +19,7 @@ public:
     int mm_init(unsigned int m);
     unsigned int getUnusedMem(void);
     void setMemfit(MemFit *m);
+
 private:
     unsigned int Max_Heap = 0; /* the memory model heap max size */
     char *mem_heap; /*point to first byte of heap */

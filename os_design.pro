@@ -23,7 +23,8 @@ HEADERS  += mainwindow.h \
     process.h \
     dynamicallocation.h \
     findfirstfit.h \
-    memfit.h
+    memfit.h \
+    memorymodel.h
 
 FORMS    += mainwindow.ui
 UI_DIR = ./UI

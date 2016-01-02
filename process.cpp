@@ -253,6 +253,7 @@ bool PCB::running(ProcessList &p,unsigned int time)
         state = FINISH;
         tape->release(pid);
         mem.mm_free(memAddr);
+        p.fplist.push_back(*this);
     }
     else
     {

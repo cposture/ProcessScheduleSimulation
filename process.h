@@ -81,6 +81,7 @@ public:
 class ProcessList:public QAbstractTableModel{
 public:
     std::vector<PCB> plist;
+    std::vector<PCB> fplist;
     bool schedule(PCB& p);
     void insertJobF(const PCB &t);
     void insertJobB(const PCB &t);
