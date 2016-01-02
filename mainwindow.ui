@@ -107,7 +107,7 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QTableView" name="runView"/>
+            <widget class="QTableView" name="finView"/>
            </item>
           </layout>
          </widget>
@@ -121,13 +121,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="pauseButton">
-            <property name="text">
-             <string>暂停</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
        </layout>
@@ -135,15 +128,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>groupBox_5</zorder>
-   <zorder>startButton</zorder>
-   <zorder>pauseButton</zorder>
-   <zorder>resourceView</zorder>
-   <zorder>pauseButton</zorder>
-   <zorder>startButton</zorder>
-   <zorder></zorder>
-   <zorder></zorder>
-   <zorder></zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

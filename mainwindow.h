@@ -4,8 +4,11 @@
 #include <QMainWindow>
 #include <QtCore>
 #include <QStandardItemModel>
-#include "process.h"
 #include "dynamicallocation.h"
+#include "processinmemmodel.h"
+#include "processfinmodel.h"
+#include "jobmodel.h"
+#include "resourcemodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,14 +25,12 @@ public:
 private slots:
     void on_startButton_clicked();
 
-    void on_pauseButton_clicked();
-
 private:
     Ui::MainWindow *ui;
-    JobList *jobModel;
-    ProcessList *processModel;
-    Resource *resource;
-    bool stop = false;
+    JobModel *jobModel;
+    ProcessInMemModel *processModel;
+    ProcessFinModel *processFinModel;
+    ResourceModel *resourceModel;
 };
 
 #endif // MAINWINDOW_H

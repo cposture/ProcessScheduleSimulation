@@ -17,16 +17,26 @@ SOURCES += main.cpp\
     process.cpp \
     dynamicallocation.cpp \
     findfirstfit.cpp \
-    memfit.cpp
+    memfit.cpp \
+    processinmemmodel.cpp \
+    processfinmodel.cpp \
+    jobmodel.cpp \
+    resourcemodel.cpp
 
 HEADERS  += mainwindow.h \
     process.h \
     dynamicallocation.h \
     findfirstfit.h \
     memfit.h \
-    memorymodel.h
+    processinmemmodel.h \
+    processfinmodel.h \
+    jobmodel.h \
+    resourcemodel.h
 
 FORMS    += mainwindow.ui
 UI_DIR = ./UI
 # to support C++11
 QMAKE_CXXFLAGS += -std=c++11
+
+RESOURCES += \
+    qdarkstyle/style.qrc

@@ -4,8 +4,7 @@
 #include <QStandardItemModel>
 #include <iostream>
 #include <fstream>
-#include "process.h"
-#include "dynamicallocation.h"
+#include <QFile>
 #include "findfirstfit.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -13,13 +12,26 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    /* load the stylesheet */
+    QFile qssf(":qdarkstyle/style.qss");
+    if (!qssf.exists())
+    {
+        std::cout << "Unable to set stylesheet, file not found" << std::endl;
+    }
+    else
+    {
+        qssf.open(QFile::ReadOnly | QFile::Text);
+        QTextStream ts(&qssf);
+        this->setStyleSheet(ts.readAll());
+    }
 
     /* init and load data */
-    jobModel = new JobList();
-    processModel = new ProcessList();
-    resource = new Resource;
+    jobModel = new JobModel();
+    processModel = new ProcessInMemModel();
+    processFinModel = new ProcessFinModel();
+    resourceModel = new ResourceModel;
     mem.setMemfit(new FindFirstFit());
-
+    processFinModel->setProcess(&processModel->fplist);
     std::fstream f;
     f.open("test.txt");
     if(!f)
@@ -28,14 +40,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     f >> memory >> tapeNum;
     mem.mm_init(memory);
-    resource->tape.init(tapeNum);
-    jobModel->init(f,resource->tape);
+    resourceModel->tape.init(tapeNum);
+    jobModel->init(f,resourceModel->tape);
     /* model */
 
     /* view */
     ui->JobView->setModel(jobModel);
     ui->processView->setModel(processModel);
-    ui->resourceView->setModel(resource);
+    ui->finView->setModel(processFinModel);
+    ui->resourceView->setModel(resourceModel);
 }
 
 MainWindow::~MainWindow()
@@ -49,11 +62,11 @@ void MainWindow::on_startButton_clicked()
     PCB cur_process;
     while(1)
     {
-        jobModel->schedule(*processModel,resource->getTime());
+        jobModel->schedule(*processModel,resourceModel->getTime());
         if(processModel->schedule(cur_process))
         {
-            cur_process.running(*processModel,resource->getTime());
-            std::cout << resource->getTime() << " : "  << *cur_process.name << " :running" << std::endl;
+            cur_process.running(*processModel,resourceModel->getTime());
+            std::cout << resourceModel->getTime() << " : "  << *cur_process.name << " :running" << std::endl;
         }
         else
         {
@@ -62,14 +75,13 @@ void MainWindow::on_startButton_clicked()
             std::cin >> c;
             break;
         }
-        resource->incTime();
-        QTime dieTime = QTime::currentTime().addMSecs(1000);
+        resourceModel->incTime();
+        processModel->updateView();
+        processFinModel->updateView();
+        jobModel->updateView();
+        resourceModel->updateView();
+        QTime dieTime = QTime::currentTime().addMSecs(250);
             while( QTime::currentTime() < dieTime )
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
-}
-
-void MainWindow::on_pauseButton_clicked()
-{
-    stop = !stop;
 }

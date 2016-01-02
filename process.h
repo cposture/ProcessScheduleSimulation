@@ -6,7 +6,6 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
-#include <QAbstractTableModel>
 #include "dynamicallocation.h"
 
 extern Memory mem;
@@ -78,7 +77,7 @@ public:
     void *memAddr;
 };
 
-class ProcessList:public QAbstractTableModel{
+class ProcessList{
 public:
     std::vector<PCB> plist;
     std::vector<PCB> fplist;
@@ -86,73 +85,29 @@ public:
     void insertJobF(const PCB &t);
     void insertJobB(const PCB &t);
     bool hasProcess(void) const;
-
-    ProcessList(QObject *parent = 0);
-    int rowCount(const QModelIndex &index) const;
-    int columnCount(const QModelIndex &index) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    //bool setData(const QModelIndex &index, const QVariant &value, int role);
-    //Qt::ItemFlags flags(const QModelIndex &index) const;
-
-private:
-    QString at(const QModelIndex &index) const;
-public:
-    static int itemCount;
 };
 
-class JobList:public QAbstractTableModel
+class JobList
 {
 public:
     bool schedule(ProcessList& p,unsigned int time);
     void init(std::istream &in,Tape &tape);
     bool hasJob(void) const;
 
-    JobList(QObject *parent = 0);
-    int rowCount(const QModelIndex &index) const;
-    int columnCount(const QModelIndex &index) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    //bool setData(const QModelIndex &index, const QVariant &value, int role);
-    //Qt::ItemFlags flags(const QModelIndex &index) const;
-private:
+protected:
     std::vector<PCB> jlist;
-    QString at(const QModelIndex &index) const;
-public:
-    static int itemCount;
 };
 
-class Resource:public QAbstractTableModel
+class Resource
 {
 public:
-
-    Resource(QObject *parent = 0);
-    int rowCount(const QModelIndex &index) const;
-    int columnCount(const QModelIndex &index) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     int getTime(void) const;
     void incTime(void);
     Tape tape;
-private:
+protected:
     unsigned int getUnusedMem(void);
-    QString at(const QModelIndex &index) const;
-    static int row,column;
     int time;
-};
-
-class FreememBlock:public QAbstractTableModel
-{
-public:
-    FreememBlock(QObject *parent = 0);
-    int rowCount(const QModelIndex &index) const;
-    int columnCount(const QModelIndex &index) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-private:
-    QString at(const QModelIndex &index) const;
-    static int column;
 };
 
 #endif

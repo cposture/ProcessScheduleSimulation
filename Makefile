@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -m64 -pipe -std=c++11 -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -IUI -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -51,11 +51,25 @@ OBJECTS_DIR   = ./
 SOURCES       = main.cpp \
 		mainwindow.cpp \
 		process.cpp \
-		dynamicallocation.cpp moc_mainwindow.cpp
+		dynamicallocation.cpp \
+		findfirstfit.cpp \
+		memfit.cpp \
+		processinmemmodel.cpp \
+		processfinmodel.cpp \
+		jobmodel.cpp \
+		resourcemodel.cpp qrc_style.cpp \
+		moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		process.o \
 		dynamicallocation.o \
+		findfirstfit.o \
+		memfit.o \
+		processinmemmodel.o \
+		processfinmodel.o \
+		jobmodel.o \
+		resourcemodel.o \
+		qrc_style.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
@@ -117,10 +131,22 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		os_design.pro mainwindow.h \
 		process.h \
-		dynamicallocation.h main.cpp \
+		dynamicallocation.h \
+		findfirstfit.h \
+		memfit.h \
+		processinmemmodel.h \
+		processfinmodel.h \
+		jobmodel.h \
+		resourcemodel.h main.cpp \
 		mainwindow.cpp \
 		process.cpp \
-		dynamicallocation.cpp
+		dynamicallocation.cpp \
+		findfirstfit.cpp \
+		memfit.cpp \
+		processinmemmodel.cpp \
+		processfinmodel.cpp \
+		jobmodel.cpp \
+		resourcemodel.cpp
 QMAKE_TARGET  = os_design
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = os_design
@@ -148,7 +174,7 @@ first: all
 
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET): UI/ui_mainwindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: os_design.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -210,6 +236,7 @@ Makefile: os_design.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		os_design.pro \
+		qdarkstyle/style.qrc \
 		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Core.prl
@@ -273,6 +300,7 @@ Makefile: os_design.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 os_design.pro:
+qdarkstyle/style.qrc:
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
@@ -290,8 +318,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h process.h dynamicallocation.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp process.cpp dynamicallocation.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents qdarkstyle/style.qrc $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h process.h dynamicallocation.h findfirstfit.h memfit.h processinmemmodel.h processfinmodel.h jobmodel.h resourcemodel.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp process.cpp dynamicallocation.cpp findfirstfit.cpp memfit.cpp processinmemmodel.cpp processfinmodel.cpp jobmodel.cpp resourcemodel.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -313,22 +342,73 @@ mocables: compiler_moc_header_make_all compiler_moc_source_make_all
 
 check: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_style.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_style.cpp
+qrc_style.cpp: qdarkstyle/style.qrc \
+		qdarkstyle/rc/Vsepartoolbar.png \
+		qdarkstyle/rc/close-pressed.png \
+		qdarkstyle/rc/Hmovetoolbar.png \
+		qdarkstyle/rc/up_arrow.png \
+		qdarkstyle/rc/left_arrow_disabled.png \
+		qdarkstyle/rc/close-hover.png \
+		qdarkstyle/rc/checkbox_unchecked.png \
+		qdarkstyle/rc/radio_unchecked_disabled.png \
+		qdarkstyle/rc/radio_checked.png \
+		qdarkstyle/rc/checkbox_checked_disabled.png \
+		qdarkstyle/rc/Hsepartoolbar.png \
+		qdarkstyle/rc/sizegrip.png \
+		qdarkstyle/rc/down_arrow.png \
+		qdarkstyle/rc/stylesheet-branch-more.png \
+		qdarkstyle/rc/radio_unchecked.png \
+		qdarkstyle/rc/branch_closed-on.png \
+		qdarkstyle/rc/checkbox_unchecked_disabled.png \
+		qdarkstyle/rc/branch_open.png \
+		qdarkstyle/rc/left_arrow.png \
+		qdarkstyle/rc/stylesheet-branch-end.png \
+		qdarkstyle/rc/undock.png \
+		qdarkstyle/rc/right_arrow.png \
+		qdarkstyle/rc/checkbox_indeterminate.png \
+		qdarkstyle/rc/checkbox_checked_focus.png \
+		qdarkstyle/rc/stylesheet-vline.png \
+		qdarkstyle/rc/radio_checked_focus.png \
+		qdarkstyle/rc/branch_closed.png \
+		qdarkstyle/rc/right_arrow_disabled.png \
+		qdarkstyle/rc/down_arrow_disabled.png \
+		qdarkstyle/rc/branch_open-on.png \
+		qdarkstyle/rc/radio_unchecked_focus.png \
+		qdarkstyle/rc/Vmovetoolbar.png \
+		qdarkstyle/rc/transparent.png \
+		qdarkstyle/rc/close.png \
+		qdarkstyle/rc/radio_checked_disabled.png \
+		qdarkstyle/rc/checkbox_checked.png \
+		qdarkstyle/rc/up_arrow_disabled.png \
+		qdarkstyle/rc/checkbox_indeterminate_focus.png \
+		qdarkstyle/rc/checkbox_unchecked_focus.png \
+		qdarkstyle/style.qss
+	/usr/lib/x86_64-linux-gnu/qt5/bin/rcc -name style qdarkstyle/style.qrc -o qrc_style.cpp
+
 compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
-moc_mainwindow.cpp: process.h \
+moc_mainwindow.cpp: dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h \
+		processinmemmodel.h \
+		process.h \
+		processfinmodel.h \
+		jobmodel.h \
+		resourcemodel.h \
 		mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/cposture/os_design -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: UI/ui_mainwindow.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
-ui_mainwindow.h: mainwindow.ui
-	/usr/lib/x86_64-linux-gnu/qt5/bin/uic mainwindow.ui -o ui_mainwindow.h
+	-$(DEL_FILE) UI/ui_mainwindow.h
+UI/ui_mainwindow.h: mainwindow.ui
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic mainwindow.ui -o UI/ui_mainwindow.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -336,26 +416,82 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
 main.o: main.cpp mainwindow.h \
-		process.h
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h \
+		processinmemmodel.h \
+		process.h \
+		processfinmodel.h \
+		jobmodel.h \
+		resourcemodel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h \
+		processinmemmodel.h \
 		process.h \
-		ui_mainwindow.h \
-		dynamicallocation.h
+		processfinmodel.h \
+		jobmodel.h \
+		resourcemodel.h \
+		UI/ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 process.o: process.cpp process.h \
-		dynamicallocation.h
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o process.o process.cpp
 
-dynamicallocation.o: dynamicallocation.cpp dynamicallocation.h
+dynamicallocation.o: dynamicallocation.cpp dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dynamicallocation.o dynamicallocation.cpp
+
+findfirstfit.o: findfirstfit.cpp findfirstfit.h \
+		memfit.h \
+		dynamicallocation.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o findfirstfit.o findfirstfit.cpp
+
+memfit.o: memfit.cpp memfit.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o memfit.o memfit.cpp
+
+processinmemmodel.o: processinmemmodel.cpp processinmemmodel.h \
+		process.h \
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o processinmemmodel.o processinmemmodel.cpp
+
+processfinmodel.o: processfinmodel.cpp processfinmodel.h \
+		process.h \
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o processfinmodel.o processfinmodel.cpp
+
+jobmodel.o: jobmodel.cpp jobmodel.h \
+		process.h \
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o jobmodel.o jobmodel.cpp
+
+resourcemodel.o: resourcemodel.cpp resourcemodel.h \
+		process.h \
+		dynamicallocation.h \
+		memfit.h \
+		findfirstfit.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o resourcemodel.o resourcemodel.cpp
+
+qrc_style.o: qrc_style.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_style.o qrc_style.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
