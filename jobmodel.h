@@ -6,7 +6,7 @@
 class JobModel:public QAbstractTableModel,public JobList
 {
 public:
-    static const unsigned int itemCount;
+    static const int itemCount;
     JobModel(QObject *parent = 0);
     int rowCount(const QModelIndex &index) const;
     int columnCount(const QModelIndex &index) const;
@@ -15,8 +15,7 @@ public:
     void updateView(void);
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    void addJob(const PCB& p);
-    void deleteJob(unsigned int i);
+    void insertJob(const PCB &p);
 private:
     QString at(const QModelIndex &index) const;
 };

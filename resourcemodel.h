@@ -14,7 +14,7 @@ public:
     void updateView(void);
 private:
     QString at(const QModelIndex &index) const;
-    static const unsigned int row,column;
+    static const int row,column;
 
 };
 
