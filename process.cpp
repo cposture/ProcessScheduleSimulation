@@ -49,6 +49,35 @@ bool JobList::hasJob(void) const
     return (bool)(jlist.size());
 }
 
+bool JobList::isValidPCB(const PCB &p)
+{
+    if(p.ntime == 0
+        || p.super <= -1
+        || p.tape ==NULL)
+    return false;
+    return true;
+}
+
+bool JobList::addJob(const PCB &p)
+{
+    if(false == isValidPCB(p))
+        return false;
+    jlist.push_back(p);
+    return true;
+}
+
+void JobList::deleteJob(int i)
+{
+    int size = jlist.size();
+    if(size == 0 || size <= i)
+        return;
+    if(i == -1)
+        jlist.pop_back();
+    for(auto ite = jlist.begin(); i >= 0 && ite != jlist.end(); ite++,i--)
+        if(i == 0)
+            jlist.erase(ite);
+}
+
 void ProcessList::insertJobF(const PCB &t)
 {
     plist.insert(plist.begin(),t);

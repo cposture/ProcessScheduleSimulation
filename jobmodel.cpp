@@ -1,6 +1,6 @@
 #include "jobmodel.h"
 
-const unsigned int JobModel::itemCount = 6;
+const int JobModel::itemCount = 6;
 
 JobModel::JobModel(QObject *parent):QAbstractTableModel(parent)
 {
@@ -18,13 +18,13 @@ int JobModel::columnCount(const QModelIndex &/*index*/) const
 
 QString JobModel::at(const QModelIndex &index) const
 {
-    unsigned int row = index.row();
-    unsigned int column = index.column();
+    int row = index.row();
+    int column = index.column();
 
-    if(row >= jlist.size() || column > itemCount)
+    if(row <= -1 || column <= -1 || column > itemCount || (unsigned int)row >= jlist.size() )
         return "";
-    PCB temp = jlist[row];
 
+    PCB temp = jlist[row];
     switch (column) {
     case 0:
         return QString(temp.name->c_str());
@@ -145,15 +145,15 @@ Qt::ItemFlags JobModel::flags(const QModelIndex &index) const
     return flags;
 }
 
-void JobModel::addJob(const PCB &p)
+void JobModel::insertJob(const PCB &p)
 {
-    jlist.push_back(p);
+    PCB t = p;
+    t.ntime = -1;
+    t.super = 1;
+    t.stime = -1;
+    addJob(t);
 }
 
-void JobModel::deleteJob(unsigned int i)
-{
-    auto ite = jlist.begin();
-    for(; i > 0 && ite != jlist.end(); ite++,i--)
-        ;
-    jlist.erase(ite);
-}
+
+
+
