@@ -1,5 +1,18 @@
+/**
+  ******************************************************************************
+  * @file    findfirst.cpp
+  * @author  cposture
+  * @version V1.0
+  * @date    2015-1-3
+  * @brief   内存空闲块查找
+  ******************************************************************************
+  * @attention
+  ******************************************************************************
+  */
+
 #include "findfirstfit.h"
 #include "dynamicallocation.h"
+
 void *FindFirstFit::find_fit(Memory &mem,unsigned int size)
 {
     unsigned int blocksize;

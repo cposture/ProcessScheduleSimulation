@@ -17,21 +17,21 @@ SOURCES += main.cpp\
     process.cpp \
     dynamicallocation.cpp \
     findfirstfit.cpp \
-    memfit.cpp \
     processinmemmodel.cpp \
     processfinmodel.cpp \
     jobmodel.cpp \
-    resourcemodel.cpp
+    resourcemodel.cpp \
+    MemFitInterface.cpp
 
 HEADERS  += mainwindow.h \
     process.h \
     dynamicallocation.h \
     findfirstfit.h \
-    memfit.h \
     processinmemmodel.h \
     processfinmodel.h \
     jobmodel.h \
-    resourcemodel.h
+    resourcemodel.h \
+    MemFitInterface.h
 
 FORMS    += mainwindow.ui
 UI_DIR = ./UI

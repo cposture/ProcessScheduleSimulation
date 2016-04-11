@@ -8,7 +8,6 @@
 #include <vector>
 #include "dynamicallocation.h"
 
-extern Memory mem;
 class ProcessList;
 class Tape;
 

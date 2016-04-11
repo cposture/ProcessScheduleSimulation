@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    /* load the stylesheet */
+    /* 加载 stylesheet */
     QFile qssf(":qdarkstyle/style.qss");
     if (!qssf.exists())
     {
@@ -25,26 +25,36 @@ MainWindow::MainWindow(QWidget *parent) :
         this->setStyleSheet(ts.readAll());
     }
 
-    /* init and load data */
+    /* 初始化和加载数据 */
+
+    /* 模型 */
     jobModel = new JobModel();
     processModel = new ProcessInMemModel();
     processFinModel = new ProcessFinModel();
     resourceModel = new ResourceModel;
-    mem.setMemfit(new FindFirstFit());
+
     processFinModel->setProcess(&processModel->fplist);
+
+    // 读取外部的Job文件
     std::fstream f;
     f.open("test.txt");
     if(!f)
         std::cout << "open file fail" << std::endl;;
+
     unsigned int tapeNum,memory;
 
     f >> memory >> tapeNum;
-    mem.mm_init(memory);
+
+    // 根据用户在外部Job文件指定的memory大小申请内存
+    Memory::getInstance()->mm_init(memory);
+
+    // mem 策略模式，设置查找空闲内存的方法
+    Memory::getInstance()->setMemfit(new FindFirstFit());
+
     resourceModel->tape.init(tapeNum);
     jobModel->init(f,resourceModel->tape);
-    /* model */
 
-    /* view */
+    /* 模型，对应界面的4个表格 */
     ui->JobView->setModel(jobModel);
     ui->processView->setModel(processModel);
     ui->finView->setModel(processFinModel);

@@ -1,18 +1,42 @@
+/**
+  ******************************************************************************
+  * @file    dynamicallocation.cpp
+  * @author  cposture
+  * @version V1.0
+  * @date    2015-1-3
+  * @brief   动态内存类——分配、释放、初始化
+  ******************************************************************************
+  * @attention
+  ******************************************************************************
+  */
+
 #include "dynamicallocation.h"
 #include <malloc.h>
+
 #define Malloc malloc
 
-Memory Memory::uniqueMemory = Memory();
+Memory* volatile Memory::uniqueMemory = nullptr;
 const unsigned int Memory::wsize = 4;
 const unsigned int Memory::dsize = 8;
 const unsigned int Memory::ChunkSize = 1 << 12;
 
-Memory Memory::getInstance(void)
+Memory *Memory::getInstance(void)
 {
+    // mutex 必须放在函数内部，如果放在类声明里会造成错误
+    static QMutex mutex;
+    // 检查实例，如果不存在就进入同步区域
+    if(uniqueMemory == nullptr)
+    {
+        mutex.lock();
+        // 进入同步区域后，再检查一次，如果为nullptr才创建实例
+        if(uniqueMemory == nullptr)
+            uniqueMemory = new Memory();
+        mutex.unlock();
+    }
     return uniqueMemory;
 }
 
-void Memory::setMemfit(MemFit *m)
+void Memory::setMemfit(MemFitInterface *m)
 {
     memfit = m;
 }
@@ -32,6 +56,7 @@ bool Memory::mem_init(void)
     mem_max_addr = mem_heap + Max_Heap;
     return true;
 }
+
 unsigned int Memory::getUnusedMem(void)
 {
     return unusedMem;

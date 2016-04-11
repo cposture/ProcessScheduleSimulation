@@ -1,5 +1,7 @@
-#include "resourcemodel.h"
 #include <QColor>
+#include "resourcemodel.h"
+#include "dynamicallocation.h"
+
 const int ResourceModel::row = 1;
 const int ResourceModel::column = 3;
 ResourceModel::ResourceModel(QObject *parent):QAbstractTableModel(parent)
@@ -59,7 +61,7 @@ QString ResourceModel::at(const QModelIndex &index) const
     case 0:
         return QString("%1").arg(time);
     case 1:
-        return QString("%1").arg(mem.unusedMem);
+        return QString("%1").arg(Memory::getInstance()->unusedMem);
     case 2:
         return QString("%1").arg(tape.getUnusedNum());
     default:

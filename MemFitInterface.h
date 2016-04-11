@@ -1,27 +1,24 @@
 /**
   ******************************************************************************
-  * @file    findfirst.h
+  * @file    MemFitInterface.h
   * @author  cposture
   * @version V1.0
   * @date    2015-1-3
-  * @brief   内存空闲块查找
+  * @brief   内存空闲块查找接口
   ******************************************************************************
   * @attention
   ******************************************************************************
   */
 
-#ifndef FINDFIRSTFIT_H
-#define FINDFIRSTFIT_H
+#ifndef MEMFIX_H
+#define MEMFIX_H
 
-#include "MemFitInterface.h"
-#include "dynamicallocation.h"
+class Memory;
 
-class FindFirstFit:public MemFitInterface
+class MemFitInterface
 {
 public:
-    FindFirstFit(){}
-    ~FindFirstFit(){}
-    void *find_fit(Memory &mem, unsigned int size);
+    virtual void *find_fit(Memory &/*mem*/, unsigned int /*size*/) = 0;
 };
 
-#endif // FINDFIRSTFIT_H
+#endif // MEMFIX_H

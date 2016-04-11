@@ -1,6 +1,6 @@
 #include "process.h"
+#include "dynamicallocation.h"
 
-Memory mem = Memory::getInstance();
 bool JobList::schedule(ProcessList &p,unsigned int time)
 {
     if(hasJob() == false)
@@ -9,7 +9,7 @@ bool JobList::schedule(ProcessList &p,unsigned int time)
     bool sign = false;
     for(auto i = min; i != jlist.end(); ++i)
     {
-        unsigned int m = mem.getUnusedMem();
+        unsigned int m = Memory::getInstance()->getUnusedMem();
         if(i->stime <= time  && i->memory <= m) /* select proper job */
         {
             if(i->ntime <= min->ntime || min->memory > m)
@@ -23,7 +23,7 @@ bool JobList::schedule(ProcessList &p,unsigned int time)
     if(!sign)
         return false;
 
-    if(NULL == ( min->memAddr = mem.mm_malloc(min->memory)))
+    if(NULL == ( min->memAddr = Memory::getInstance()->mm_malloc(min->memory)))
         return false;
 
     p.insertJobB(*min);
@@ -128,7 +128,7 @@ bool PCB::running(ProcessList &p,unsigned int time)
         wtime = (float)(turntime)/ntime;
         state = FINISH;
         tape->release(pid);
-        mem.mm_free(memAddr);
+        Memory::getInstance()->mm_free(memAddr);
         p.fplist.push_back(*this);
     }
     else
